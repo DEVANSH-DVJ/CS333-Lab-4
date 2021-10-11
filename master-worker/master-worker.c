@@ -29,11 +29,12 @@ void *generate_requests_loop(void *data) {
   int thread_id = *((int *)data);
 
   while (1) {
+    pthread_mutex_lock(&buf_acc);
     if (item_to_produce >= total_items) {
+      pthread_mutex_unlock(&buf_acc);
       break;
     }
 
-    pthread_mutex_lock(&buf_acc);
     while (curr_buf_size == max_buf_size)
       pthread_cond_wait(&full, &buf_acc);
 
