@@ -51,8 +51,8 @@ void *generate_requests_loop(void *data) {
 // ensure that the workers call the function print_consumed
 // when they consume an item
 int main(int argc, char *argv[]) {
-  int *master_thread_id;
-  pthread_t *master_thread;
+  int *master_thread_id, *worker_thread_id;
+  pthread_t *master_thread, *worker_thread;
   item_to_produce = 0;
   curr_buf_size = 0;
 
@@ -82,11 +82,23 @@ int main(int argc, char *argv[]) {
                    (void *)&master_thread_id[i]);
 
   // create worker consumer threads
+  worker_thread_id = (int *)malloc(sizeof(int) * num_workers);
+  worker_thread = (pthread_t *)malloc(sizeof(pthread_t) * num_workers);
+  for (i = 0; i < num_workers; i++)
+    worker_thread_id[i] = i;
+
+  for (i = 0; i < num_workers; i++)
+    pthread_create(&worker_thread[i], NULL, consume_requests_loop,
+                   (void *)&worker_thread_id[i]);
 
   // wait for all threads to complete
   for (i = 0; i < num_masters; i++) {
     pthread_join(master_thread[i], NULL);
     printf("master %d joined\n", i);
+  }
+  for (i = 0; i < num_workers; i++) {
+    pthread_join(worker_thread[i], NULL);
+    printf("worker %d joined\n", i);
   }
 
   free(buffer);
