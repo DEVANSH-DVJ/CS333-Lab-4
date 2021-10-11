@@ -12,8 +12,9 @@ int total_items, max_buf_size, num_workers, num_masters;
 
 int *buffer;
 
-pthread_mutex_t buf_acc;
-pthread_cond_t full, empty;
+pthread_mutex_t buf_acc = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t full = PTHREAD_COND_INITIALIZER,
+               empty = PTHREAD_COND_INITIALIZER;
 
 void print_produced(int num, int master) {
   printf("Produced %d by master %d\n", num, master);
