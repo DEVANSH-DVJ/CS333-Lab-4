@@ -47,6 +47,23 @@ void *generate_requests_loop(void *data) {
   return 0;
 }
 
+void *consume_requests_loop(void *data) {
+  int thread_id = *((int *)data);
+
+  while (1) {
+    pthread_mutex_lock(&buf_acc);
+    while (curr_buf_size == 0) {
+      pthread_cond_wait(&empty, &buf_acc);
+    }
+
+    print_consumed(buffer[--curr_buf_size], thread_id);
+
+    pthread_cond_broadcast(&full);
+    pthread_mutex_unlock(&buf_acc);
+  }
+  return 0;
+}
+
 // write function to be run by worker threads
 // ensure that the workers call the function print_consumed
 // when they consume an item
