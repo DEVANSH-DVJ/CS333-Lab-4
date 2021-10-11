@@ -53,6 +53,10 @@ void *consume_requests_loop(void *data) {
   while (1) {
     pthread_mutex_lock(&buf_acc);
     while (curr_buf_size == 0) {
+      if (item_to_produce >= total_items) {
+        pthread_mutex_unlock(&buf_acc);
+        return 0;
+      }
       pthread_cond_wait(&empty, &buf_acc);
     }
 
