@@ -7,11 +7,13 @@
 #include <sys/types.h>
 #include <wait.h>
 
-
 int item_to_produce, curr_buf_size;
 int total_items, max_buf_size, num_workers, num_masters;
 
 int *buffer;
+
+pthread_mutex_t buf_acc;
+pthread_cond_t full, empty;
 
 void print_produced(int num, int master) {
   printf("Produced %d by master %d\n", num, master);
