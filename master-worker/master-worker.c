@@ -33,9 +33,16 @@ void *generate_requests_loop(void *data) {
       break;
     }
 
+    pthread_mutex_lock(&buf_acc);
+    while (curr_buf_size == max_buf_size)
+      pthread_cond_wait(&full, &buf_acc);
+
     buffer[curr_buf_size++] = item_to_produce;
     print_produced(item_to_produce, thread_id);
     item_to_produce++;
+
+    pthread_cond_broadcast(&empty);
+    pthread_mutex_unlock(&buf_acc);
   }
   return 0;
 }
