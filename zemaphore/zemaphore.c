@@ -8,7 +8,11 @@
 
 #include "zemaphore.h"
 
-void zem_init(zem_t *s, int value) {}
+void zem_init(zem_t *s, int value) {
+  pthread_mutex_init(&s->lock, NULL);
+  pthread_cond_init(&s->cond, NULL);
+  s->count = value;
+}
 
 void zem_down(zem_t *s) {}
 
