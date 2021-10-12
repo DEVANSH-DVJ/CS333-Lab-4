@@ -28,6 +28,11 @@ int main(int argc, char *argv[]) {
   pthread_t mythreads[NUM_THREADS];
   int mythread_id[NUM_THREADS];
 
+  zem_init(&zems[0], 1);
+  for (int i = 1; i < NUM_THREADS; i++) {
+    zem_init(&zems[i], 0);
+  }
+
   for (int i = 0; i < NUM_THREADS; i++) {
     mythread_id[i] = i;
     pthread_create(&mythreads[i], NULL, justprint, (void *)&mythread_id[i]);
