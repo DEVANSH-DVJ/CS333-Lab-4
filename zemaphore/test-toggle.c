@@ -7,8 +7,12 @@
 #include <sys/types.h>
 #include <wait.h>
 
+#include "zemaphore.h"
+
 #define NUM_THREADS 3
 #define NUM_ITER 10
+
+zem_t zems[NUM_THREADS];
 
 void *justprint(void *data) {
   int thread_id = *((int *)data);
