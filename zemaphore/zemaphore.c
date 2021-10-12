@@ -21,4 +21,9 @@ void zem_down(zem_t *s) {
   pthread_mutex_unlock(&s->lock);
 }
 
-void zem_up(zem_t *s) {}
+void zem_up(zem_t *s) {
+  pthread_mutex_lock(&s->lock);
+  ++s->count;
+  pthread_cond_signal(&s->cond);
+  pthread_mutex_unlock(&s->lock);
+}
