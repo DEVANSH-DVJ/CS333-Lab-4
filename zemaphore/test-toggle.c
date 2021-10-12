@@ -18,8 +18,14 @@ void *justprint(void *data) {
   int thread_id = *((int *)data);
 
   for (int i = 0; i < NUM_ITER; i++) {
+    zem_down(&zems[thread_id]);
     printf("This is thread %d\n", thread_id);
+    if (thread_id + 1 == NUM_THREADS)
+      zem_up(&zems[0]);
+    else
+      zem_up(&zems[thread_id + 1]);
   }
+
   return 0;
 }
 
