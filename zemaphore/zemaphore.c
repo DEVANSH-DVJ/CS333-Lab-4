@@ -14,6 +14,11 @@ void zem_init(zem_t *s, int value) {
   s->count = value;
 }
 
-void zem_down(zem_t *s) {}
+void zem_down(zem_t *s) {
+  pthread_mutex_lock(&s->lock);
+  if (--s->count < 0)
+    pthread_cond_wait(&s->cond, &s->lock);
+  pthread_mutex_unlock(&s->lock);
+}
 
 void zem_up(zem_t *s) {}
